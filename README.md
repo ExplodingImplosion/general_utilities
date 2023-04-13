@@ -2,7 +2,7 @@
 General utility scripts, 'namespaces' and singletons that I use in most of my Godot projects.
 
 There are 3 types of scripts in this repo. There are singletons, which are intended to be added to a
-project's autoload. The order I use is Inputs --> Quack. There are 'namespaces', which are intended to
+project's autoload. The order I use is Quack --> Inputs --> Console. There are 'namespaces', which are intended to
 never be directly instantiated when the project is running. They are rather used as namespaces in
 projects. Hence, why they do not contain any variables or non-static functions. NOTE: When I refer to
 "macros", I mean static functions that are intended to either abstract or shorthand functions that
@@ -53,8 +53,13 @@ some functions to make sure that numbers are within u8 and u16 ranges.
 Label Utilities: A bunch of macros that make it easier to set individual label theme override properties
 through script.
 
-Resources: Potentially depreciated, to be honest.
+Resources: Static funcs and consts that help Quack load resources. TBH, it might make more 'sense' to access
+resources from this script, instead of Quack. I could totally make a constant Array of Resources using load()s.
+But Quack.get_resource(Resources.SOMETHING) is slightly shorter than Resources.get_resource(Resources.SOMETHING),
+or Resources.spawn(Resources.SOMETHING)... so I'm leaving it the way it currently is.
 
 Window Utilities: A bunch of macros that make it easier to perform actions on windows through script.
 These actions include renaming window titles, checking if windows are in fullscreen mode, setting the
 size of windows, etc. Also includes constants to access various video settings.
+
+Console: Need to work on making it more user-friendly and not yoinked from someone else
