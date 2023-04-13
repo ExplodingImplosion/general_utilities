@@ -1,8 +1,5 @@
 class_name ByteUtils
 
-static func bit_has_flag(bit: int, flag: int) -> bool:
-	return bool(bit&flag)
-
 static func get_byte_change_to_set_bitflag_in_bytes(bit_index: int, on: bool, bytes: PackedByteArray) -> int:
 	var byte_idx: int = which_byte_is_bit_in(bit_index)
 	var byte: int = bytes[byte_idx]
@@ -32,37 +29,88 @@ static func set_bit_by_index_in_byte(bit_index: int, byte: int, on: bool) -> int
 
 static func get_bit_by_index(idx: int, bytes: PackedByteArray) -> bool:
 	var byte_idx: int = which_byte_is_bit_in(idx)
-	return bool(bytes[byte_idx] & get_bit_offset_within_byte(idx,byte_idx))
+	return bool(bytes[byte_idx] & (1 << get_bit_offset_within_byte(idx,byte_idx)))
 
 static func get_bit_offset_within_byte(bit: int, byte_idx: int) -> int:
 	return bit - byte_idx*8
 
+# What the fuck was i smoking when i wrote this
 static func get_bit(bit: int, bytes: PackedByteArray) -> bool:
 	var bits: int
 	for i in 8:
+		@warning_ignore("unassigned_variable_op_assign")
 		bits |= bytes[i] << i*8
 	return bool(bits & bit)
 
+static func is_multiple_of(a: int, b: int) -> bool:
+	return a % b == 0
+
+static func bit_has_flag(bit: int, flag: int) -> bool:
+	return bool(bit&flag)
+
+static func get_bit_by_index_in_byte(bit_index: int, byte: int) -> bool:
+	return bit_has_flag(byte,1<<bit_index)
+
 static func which_byte_is_bit_in(bit_offset: int) -> int:
-	# chatGPT told me x >> 3 is the same as x / 8 but might be more performant
-	return bit_offset/8+int(bool(bit_offset%8))
+	@warning_ignore("integer_division")
+	return bit_offset/8+(bit_offset%8)/8
 
 const max_u8 = 255
 static func is_bit_valid_uint8(bit: int) -> bool:
 	return bit <= max_u8 and bit >= 0
 
 static func assert_bit_valid_uint8(bit: int) -> void:
-	assert(is_bit_valid_uint8(bit))
+	assert(is_bit_valid_uint8(bit),"Number %s is an invalid unsigned 8-bit int, from 0 to %s"%[bit,max_u8])
 
 const max_u16 = 65535
 static func is_valid_u16(num: int) -> bool:
 	return num <= max_u16 and num >= 0
 
 static func assert_valid_u16(num: int) -> void:
-	assert(is_valid_u16(num))
+	assert(is_valid_u16(num),"Number %s is an invalid unisgned 16-bit int, from 0 to %s."%[num,max_u16])
 
 static func wrap_u16(num: int) -> int:
 	return wrapi(num,0,max_u16)
 
 static func wrap_u8(num: int) -> int:
 	return wrapi(num,0,max_u8)
+
+static func dumbhash(bytes: PackedByteArray) -> int:
+	var gaming: int
+	for i in bytes.size():
+		@warning_ignore("unassigned_variable_op_assign")
+		gaming += bytes[i] * i
+	return gaming
+
+static func encode_v2(bytes: PackedByteArray, v2: Vector2, offset: int) -> PackedByteArray:
+	bytes.encode_float(offset,v2.x)
+	bytes.encode_float(offset+4,v2.y)
+	return bytes
+
+static func decode_v2(bytes: PackedByteArray, offset: int) -> Vector2:
+	var v2: Vector2
+	v2.x = bytes.decode_float(offset)
+	v2.y = bytes.decode_float(offset+4)
+	return v2
+
+static func encode_v3(bytes: PackedByteArray, v3: Vector3, offset: int) -> PackedByteArray:
+	bytes.encode_float(offset,v3.x)
+	bytes.encode_float(offset+4,v3.y)
+	bytes.encode_float(offset+8,v3.z)
+	return bytes
+
+static func decode_v3(bytes: PackedByteArray, offset: int) -> Vector3:
+	var v3: Vector3
+	v3.x = bytes.decode_float(offset)
+	v3.y = bytes.decode_float(offset+4)
+	v3.z = bytes.decode_float(offset+8)
+	return v3
+
+const usec_to_seconds_conversion_ratio = 0.000001
+const seconds_to_usec_conversion_ratio = 1000000
+
+static func usec_to_seconds(usec: int) -> float:
+	return float(usec) * 0.000001
+
+static func seconds_to_usec(seconds: float) -> int:
+	return int(seconds*1000000)

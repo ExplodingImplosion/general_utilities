@@ -12,13 +12,15 @@ const OOF_FPS_SETTING: StringName = "quack/video/framerate/out_of_focus_framerat
 const FULLSCREEN_SETTING: StringName = "quack/video/fullscreen/game_fullscreen"
 const MENU_FULLSCREEN_SETTING: StringName = "quack/video/fullscreen/menu_fullscreen"
 
+const RENDER_SCALE_SETTING: StringName = "rendering/scaling_3d/scale"
+
 enum {FULLSCREEN,WINDOWED,BORDERLESS,RESIZEABLE=8}
 
 const DEBUG_IDENTIFIER: String = " (DEBUG)"
 
 
 static func set_window_mode(mode: int) -> void:
-	assert(mode <= Window.MODE_EXCLUSIVE_FULLSCREEN)
+	assert(mode <= Window.MODE_EXCLUSIVE_FULLSCREEN and mode >= 0, "Invalid window mode %s. Should be a value from 0 to %s."%[mode,Window.MODE_EXCLUSIVE_FULLSCREEN])
 	Quack.root.set_mode(mode)
 
 static func go_fullscreen() -> void:
@@ -30,7 +32,7 @@ static func go_windowed() -> void:
 static func is_windowed(this_window: Window) -> bool:
 	return this_window.get_mode() == Window.MODE_WINDOWED
 
-static func root_windowed() -> bool:
+static func is_root_windowed() -> bool:
 	return is_windowed(Quack.root)
 
 static func set_fullscreen(enabled: bool = true) -> void:
@@ -45,30 +47,54 @@ static func set_borderless(enabled: bool = false) -> void:
 	Quack.root.set_flag(Window.FLAG_BORDERLESS, enabled)
 
 static func go_debug_window() -> void:
-	if !root_windowed():
+	if !is_root_windowed():
 		go_windowed()
 	Quack.root.set_size(DEBUG_WINDOW_SIZE)
 	Quack.root.set_position(DEBUG_WINDOW_POS)
 
+static func set_max_game_fps(max_fps: int) -> void:
+	if Quack.is_3D_scene():
+		Engine.set_max_fps(max_fps)
+	ProjectSettings.set_setting(FPS_SETTING,max_fps)
+
+static func set_max_menu_fps(max_fps: int) -> void:
+	if !Quack.is_3D_scene():
+		Engine.set_max_fps(max_fps)
+	ProjectSettings.set_setting(MENU_FPS_SETTING,max_fps)
+
+static func set_max_out_of_focus_fps(max_fps: int) -> void:
+	ProjectSettings.set_setting(OOF_FPS_SETTING,max_fps)
+
+static func get_oof_fps_cap() -> int:
+	return ProjectSettings.get_setting(OOF_FPS_SETTING)
+
+static func get_game_fps_cap() -> int:
+	return ProjectSettings.get_setting(FPS_SETTING)
+
+static func get_menu_fps_cap() -> int:
+	return ProjectSettings.get_setting(MENU_FPS_SETTING)
+
+static func initialize_general_settings() -> void:
+	set_render_scale(ProjectSettings.get_setting(RENDER_SCALE_SETTING))
+
 static func go_menu_settings() -> void:
 	set_all_window_settings(ProjectSettings.get_setting(MENU_FPS_SETTING),
 							ProjectSettings.get_setting(MENU_RES_SETTING),
-							ProjectSettings.get_setting(MENU_FULLSCREEN_SETTING))
+							ProjectSettings.get_setting(MENU_FULLSCREEN_SETTING),0)
 
-static func set_all_window_settings(max_fps: int, size: Vector2i, fullscreen: int) -> void:
+static func set_all_window_settings(max_fps: int, size: Vector2i, fullscreen: int,flags: int) -> void:
 	Engine.set_max_fps(max_fps)
+	@warning_ignore("static_called_on_instance")
 	if Quack.is_exported():
 		resize_aligned(size)
-		if fullscreen == 0:
-			go_fullscreen()
-		else:
-			Quack.root.borderless = ByteUtils.bit_has_flag(fullscreen,BORDERLESS)
-			Quack.root.unresizable = !ByteUtils.bit_has_flag(fullscreen,RESIZEABLE)
+		set_window_mode(fullscreen)
+		if fullscreen != Window.MODE_EXCLUSIVE_FULLSCREEN:
+			Quack.root.borderless = ByteUtils.bit_has_flag(flags,BORDERLESS)
+			Quack.root.unresizable = !ByteUtils.bit_has_flag(flags,RESIZEABLE)
 			# The same as doing these. idk why the fuck 'flags' work this way and are
 			# settable this way via script.
 #			Quack.root.set_flag(Window.FLAG_BORDERLESS,ByteUtils.bit_has_flag(fullscreen,BORDERLESS))
 #			Quack.root.set_flag(Window.FLAG_RESIZE_DISABLED,ByteUtils.bit_has_flag(fullscreen,RESIZEABLE))
-			go_windowed()
 
 static func resize_aligned(size: Vector2i) -> void:
 	Quack.root.set_size(size)
@@ -79,11 +105,12 @@ const video_settings_string: String = "Video Settings"
 static func go_game_settings() -> void:
 	set_all_window_settings(ProjectSettings.get_setting(FPS_SETTING),
 							ProjectSettings.get_setting(RES_SETTING),
-							ProjectSettings.get_setting(FULLSCREEN_SETTING))
+							ProjectSettings.get_setting(FULLSCREEN_SETTING),0)
 
 ## Sets the render scale of the main window. lmao.
 static func set_render_scale(scale: float) -> void:
 	Quack.root.set_scaling_3d_scale(scale)
+	ProjectSettings.set_setting(RENDER_SCALE_SETTING,scale)
 
 ## Changes the main window title to a specified string. lmao.
 static func change_window_title(title: String) -> void:

@@ -7,5 +7,6 @@ class_name ToggleButton
 func _ready() -> void:
 	_on_Toggle_Button_toggled(button_pressed)
 
+@warning_ignore("shadowed_variable_base_class")
 func _on_Toggle_Button_toggled(toggled: bool):
 	set_text(ontext) if toggled else set_text(offtext)
