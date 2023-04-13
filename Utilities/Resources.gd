@@ -6,7 +6,7 @@ enum { PERFOVERLAY,
 const stringnames: Array[StringName] =[StringName("Perf Overlay")]
 static func get_strings() -> PackedStringArray:
 	return PackedStringArray([
-		"res://Interface/Performance Overlay/Performance Overlay.tscn",
+		"res://Performance Overlay/Performance Overlay.tscn",
 		])
 
 static func get_resource_id_map() -> Dictionary:
