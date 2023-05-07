@@ -1,3 +1,25 @@
+# MIT License
+#
+# Copyright (c) 2023 Miles Mazzotta
+# https://github.com/blackears/cyclopsLevelBuilder
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 class_name InterpGeneric extends RefCounted
 ## This class serves as a generic way to interpolate properties for [Node]s that
 ## are updated on physics frames (i.e. only change in [method Node._physics_process]), but are
@@ -5,7 +27,7 @@ class_name InterpGeneric extends RefCounted
 ##[br][br]Nodes can integrate this object into their scripts, calling [method update] using 
 ## Nodes can call [method interpolate] or [method interpolate_current_physics_fraction]
 ## during render frames to interpolate the property between its [member last] and
-## [member next] values
+## [member next] values.
 
 
 ## The 'previous real' value of the given property that was used on the last
@@ -18,7 +40,7 @@ var next: Variant
 var owner: Node
 ## The path to the [member owner]'s property which will be interpolated.
 var property: StringName
-## The numerical weight
+## The numerical weight used in interpolating [member owner]'s [member property].
 var diff: float
 
 ## Emitted whenever [method update] is called, and passes whatever value
@@ -50,8 +72,9 @@ func assign_property(value: Variant) -> void:
 ## Assigns [member last] to [member next]. This function is really just an
 ## abstraction to help understand why the assignment happens. It happens because
 ## before [member property] is updated, [member last] needs to be updated to
-## [member property]'s 'real' position, that way when [member next] is updated,
-## 
+## [member property]'s 'real' value, that way when [member next] is updated,
+## [member property] will properly interpolate between its new 'previous' value
+## and its new 'real' value.
 func update_last() -> void:
 	last = next
 
@@ -65,7 +88,7 @@ func update_next() -> void:
 func calc_diff() -> void:
 	diff = last.distance_to(next)
 
-## Interpolates 
+## Interpolates the property on process frames
 func interpolate(frac: float) -> void:
 	assign_property(lerp(last,next,diff))
 	interpolated.emit(frac)
@@ -75,12 +98,15 @@ func interpolate(frac: float) -> void:
 func interpolate_current_physics_fraction() -> void:
 	interpolate(Engine.get_physics_interpolation_fraction())
 
-## Called 
+## Called before updating [member property] to a new value on a physics frame.
+## Calls [method update_last] and [method assign_property] with [member next]
+## passed as an argument for the latter function.
 func preupdate() -> void:
 	update_last()
 	assign_property(next)
 
-## Called 
+## Called after updating [member property]'s value. Calls [method update_next]
+## and [method calc_diff].
 func postupdate() -> void:
 	update_next()
 	calc_diff()
@@ -97,14 +123,20 @@ func update(update_func: Callable, delta: float) -> void:
 	postupdate()
 	updated.emit(next)
 
-##
+## Snaps the interpolating values to [member property]'s current value, such that
+## until [method update] is called again, [member node]'s [member property] will
+## no longer interpolate.
+## Sets [member last] and [member next] to [member property], and sets [member diff]
+## to 0. Also emits [signal snapped] with [member property]'s current value passed
+## as an argument.
 func snap() -> void:
 	last = owner[property]
 	next = last
 	diff = 0
 	snapped.emit(last)
 
-##
+## Identical to [method snap], except it accepts an argument to set [member property]
+## to.
 func snap_to(value: Variant) -> void:
 	assign_property(value)
 	last = value
