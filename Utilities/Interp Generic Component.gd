@@ -47,23 +47,24 @@ var diff: float
 ## [member property] became.
 signal updated(value)
 ## Emitted whenever the [member owner]'s property is changed by the interpolater.
-## Includes [code]value[\code] as an argument, which is the [member owner]'s
+## Includes [code]value[/code] as an argument, which is the [member owner]'s
 ## property's current value.
 signal property_updated(value)
 ## Whenever the interpolater interpolates the [member owner]'s property between
 ## its [member last] and [member next] values, and 
 signal interpolated(frac)
-## Whenever the interpolater snaps to a value. Includes [code]to[\code] as an
+## Whenever the interpolater snaps to a value. Includes [code]to[/code] as an
 ## argument, which is the value the [member owner]'s property was snapped to.
 signal snapped(to)
 
 ## Constructor. Sets [member owner] and [member property].
+@warning_ignore("shadowed_variable")
 func _init(owner: Node, property: StringName) -> void:
 	self.owner = owner
 	self.property = property
 
-## Assigns the [member owner]'s property to the [code]value[\code] parameter and
-## emits the [signal property_updated] signal with [code]value[\code] passed as
+## Assigns the [member owner]'s property to the [code]value[/code] parameter and
+## emits the [signal property_updated] signal with [code]value[/code] passed as
 ## a parameter.
 func assign_property(value: Variant) -> void:
 	owner[property] = value
@@ -113,8 +114,8 @@ func postupdate() -> void:
 
 ## This function is intedned to be called when a function that changes
 ## [member owner]'s [member property]'s value. It sets up the [member owner] how
-## it needs to be before the property is updated, then calls [code]update_func[\code]
-## with [code]delta[\code] passed as an argument, and then sets up the interpolater
+## it needs to be before the property is updated, then calls [code]update_func[/code]
+## with [code]delta[/code] passed as an argument, and then sets up the interpolater
 ## how it needs to be for the next frame before emitting [signal updated] with
 ## the property's new value passed as an argument.
 func update(update_func: Callable, delta: float) -> void:
