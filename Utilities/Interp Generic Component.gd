@@ -112,7 +112,7 @@ func postupdate() -> void:
 	update_next()
 	calc_diff()
 
-## This function is intedned to be called when a function that changes
+## This function is intended to be called when a function that changes
 ## [member owner]'s [member property]'s value. It sets up the [member owner] how
 ## it needs to be before the property is updated, then calls [code]update_func[/code]
 ## with [code]delta[/code] passed as an argument, and then sets up the interpolater
