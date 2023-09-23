@@ -1,10 +1,10 @@
 [gd_scene load_steps=3 format=3 uid="uid://co5urtol4l8vi"]
 
-[ext_resource type="Script" path="res://Performance Overlay/Performance Overlay.gd" id="1_83d83"]
-[ext_resource type="StyleBox" uid="uid://dwoc0dj6osfw3" path="res://Performance Overlay/perf overlay background.tres" id="2_t25to"]
+[ext_resource type="Script" path="res://Interface/Performance Overlay/Performance Overlay.gd" id="1_mqj36"]
+[ext_resource type="StyleBox" uid="uid://dwoc0dj6osfw3" path="res://Interface/Performance Overlay/perf overlay background.tres" id="2_0hsfq"]
 
 [node name="Performance Overlay" type="CanvasLayer"]
-script = ExtResource("1_83d83")
+script = ExtResource("1_mqj36")
 
 [node name="container" type="HFlowContainer" parent="."]
 offset_right = 900.0
@@ -19,14 +19,14 @@ theme_override_constants/separation = 0
 [node name="label" type="Label" parent="container/fpscontainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 text = "FPS: "
 
 [node name="readout" type="Label" parent="container/fpscontainer"]
 custom_minimum_size = Vector2(30, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 clip_text = true
 visible_characters = 7
 
@@ -37,14 +37,14 @@ theme_override_constants/separation = 0
 [node name="label" type="Label" parent="container/interpcontainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 text = "Interp Fraction: "
 
 [node name="readout" type="Label" parent="container/interpcontainer"]
 custom_minimum_size = Vector2(56, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 clip_text = true
 visible_characters = 7
 
@@ -55,14 +55,14 @@ theme_override_constants/separation = 0
 [node name="label" type="Label" parent="container/deltacontainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 text = "Tick Delta: "
 
 [node name="readout" type="Label" parent="container/deltacontainer"]
 custom_minimum_size = Vector2(56, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 clip_text = true
 visible_characters = 7
 
@@ -73,14 +73,14 @@ theme_override_constants/separation = 0
 [node name="label" type="Label" parent="container/physdeltacontainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 text = "Physics Tick Delta: "
 
 [node name="readout" type="Label" parent="container/physdeltacontainer"]
 custom_minimum_size = Vector2(56, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 clip_text = true
 visible_characters = 7
 
@@ -91,14 +91,14 @@ theme_override_constants/separation = 0
 [node name="label" type="Label" parent="container/quackphysdeltacontainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 text = "Quack Physics Delta:"
 
 [node name="readout" type="Label" parent="container/quackphysdeltacontainer"]
 custom_minimum_size = Vector2(56, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 clip_text = true
 visible_characters = 7
 
@@ -109,14 +109,14 @@ theme_override_constants/separation = 0
 [node name="label" type="Label" parent="container/quackdeltacontainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 text = "Quack Delta: "
 
 [node name="readout" type="Label" parent="container/quackdeltacontainer"]
 custom_minimum_size = Vector2(56, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 clip_text = true
 visible_characters = 7
 
@@ -127,14 +127,14 @@ theme_override_constants/separation = 0
 [node name="label" type="Label" parent="container/processtimecontainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 text = "Process Time: "
 
 [node name="readout" type="Label" parent="container/processtimecontainer"]
 custom_minimum_size = Vector2(56, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 clip_text = true
 visible_characters = 7
 
@@ -145,14 +145,14 @@ theme_override_constants/separation = 0
 [node name="label" type="Label" parent="container/physprocesstimecontainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 text = "Physics Process Time: "
 
 [node name="readout" type="Label" parent="container/physprocesstimecontainer"]
 custom_minimum_size = Vector2(56, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 clip_text = true
 visible_characters = 7
 
@@ -163,14 +163,14 @@ theme_override_constants/separation = 0
 [node name="label" type="Label" parent="container/processdeltatimediffcontainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 text = "Process Delta/Time Diff: "
 
 [node name="readout" type="Label" parent="container/processdeltatimediffcontainer"]
 custom_minimum_size = Vector2(56, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 clip_text = true
 visible_characters = 7
 
@@ -181,14 +181,14 @@ theme_override_constants/separation = 0
 [node name="label" type="Label" parent="container/processquackdeltadiffcontainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 text = "Process/Quack Delta Diff: "
 
 [node name="readout" type="Label" parent="container/processquackdeltadiffcontainer"]
 custom_minimum_size = Vector2(56, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 clip_text = true
 visible_characters = 7
 
@@ -199,14 +199,14 @@ theme_override_constants/separation = 0
 [node name="label" type="Label" parent="container/physicsprocesstimedeltadiffcontainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 text = "Physics Process Time/Delta Diff: "
 
 [node name="readout" type="Label" parent="container/physicsprocesstimedeltadiffcontainer"]
 custom_minimum_size = Vector2(56, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 clip_text = true
 visible_characters = 7
 
@@ -217,14 +217,14 @@ theme_override_constants/separation = 0
 [node name="label" type="Label" parent="container/physicsprocessratecontainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 text = "Physics Process Rate: "
 
 [node name="readout" type="Label" parent="container/physicsprocessratecontainer"]
 custom_minimum_size = Vector2(56, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 clip_text = true
 visible_characters = 7
 
@@ -235,14 +235,14 @@ theme_override_constants/separation = 0
 [node name="label" type="Label" parent="container/netupdateratecontainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 text = "Net Update Rate: "
 
 [node name="readout" type="Label" parent="container/netupdateratecontainer"]
 custom_minimum_size = Vector2(56, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 clip_text = true
 visible_characters = 7
 
@@ -253,14 +253,14 @@ theme_override_constants/separation = 0
 [node name="label" type="Label" parent="container/physicsnetdiffcontainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 text = "Net Update/Physics Process Diff: "
 
 [node name="readout" type="Label" parent="container/physicsnetdiffcontainer"]
 custom_minimum_size = Vector2(56, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 clip_text = true
 visible_characters = 7
 
@@ -271,14 +271,14 @@ theme_override_constants/separation = 0
 [node name="label" type="Label" parent="container/physicsprocessoffsetcontainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 text = "Physics Process Offset: "
 
 [node name="readout" type="Label" parent="container/physicsprocessoffsetcontainer"]
 custom_minimum_size = Vector2(56, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 clip_text = true
 visible_characters = 7
 
@@ -289,14 +289,14 @@ theme_override_constants/separation = 0
 [node name="label" type="Label" parent="container/netupdateoffsetcontainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 text = "Net Update Offset: "
 
 [node name="readout" type="Label" parent="container/netupdateoffsetcontainer"]
 custom_minimum_size = Vector2(56, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 clip_text = true
 visible_characters = 7
 
@@ -307,14 +307,14 @@ theme_override_constants/separation = 0
 [node name="label" type="Label" parent="container/physicsprocessnetupdateoffsetdiffcontainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 text = "Net Update/Physics Process Offset Diff: "
 
 [node name="readout" type="Label" parent="container/physicsprocessnetupdateoffsetdiffcontainer"]
 custom_minimum_size = Vector2(56, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 clip_text = true
 visible_characters = 7
 
@@ -326,13 +326,13 @@ theme_override_constants/separation = 0
 [node name="label" type="Label" parent="container/test"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 text = "test: "
 
 [node name="readout" type="Label" parent="container/test"]
 custom_minimum_size = Vector2(100, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = ExtResource("2_t25to")
+theme_override_styles/normal = ExtResource("2_0hsfq")
 clip_text = true
 visible_characters = 7

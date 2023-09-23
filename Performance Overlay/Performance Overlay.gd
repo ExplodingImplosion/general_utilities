@@ -4,13 +4,25 @@ const WIDTHSETTINGPATH: String = "quack/performance_overlay/size/max_width"
 const FONTSIZESETTINGPATH: String = "quack/performance_overlay/size/font_size"
 
 func _ready() -> void:
-	var width: int = ProjectSettings.get_setting(WIDTHSETTINGPATH,$container.size.x)
-	if width <= 0:
-		width = Quack.root.size.x
-	$container.size.x = width
+	container.size.x = max_width if max_width > 0 else Quack.root.size.x
+
+func _enter_tree() -> void:
+	Quack.root.size_changed.connect(assign_width_to_root_width)
+func _exit_tree() -> void:
+	Quack.root.size_changed.disconnect(assign_width_to_root_width)
+
+var assign_width_to_root_width: Callable = func assign_width_to_root_width() -> void:
+	var root_width: int = Quack.root.size.x
+	if root_width < max_width or max_width == 0:
+		container.size.x = root_width
+	elif container.size.x != max_width:
+		container.size.x = max_width
 
 #@onready var topcontainer: HBoxContainer = $topcontainer
 #@onready var fpscontainer: HBoxContainer = $topcontainer/fpscontainer
+
+@onready var container: HFlowContainer = $container
+@onready var max_width: int = ProjectSettings.get_setting(WIDTHSETTINGPATH,container.size.x)
 
 @onready var fpsreadout: Label = $container/fpscontainer/readout
 @onready var interpreadout: Label = $container/interpcontainer/readout
@@ -42,11 +54,11 @@ func _process(delta: float) -> void:
 	quackdeltareadout.set_text(str(Quack.delta_time_float))
 	processdeltatimediffreadout.set_text(str(delta - processtime))
 	processquackdeltadiffreadout.set_text(str(delta - Quack.delta_time_float))
-	var netupdaterate: float = float(Quack.delta_time_net_recieve)* 0.000001
+	var netupdaterate: float = float(Quack.delta_time_net_receive)* 0.000001
 	netupdateratereadout.set_text(str(netupdaterate))
 	physicsnetdiffreadout.set_text(str(netupdaterate - physicsprocessrate))
-#	float((Quack.current_time_net_recieve-Quack.net_recieve_start_time)%1000000)* 0.000001
-	var netupdateoffset: float = float(Quack.current_time_net_recieve%1000000)* 0.000001
+#	float((Quack.current_time_net_receive-Quack.net_receive_start_time)%1000000)* 0.000001
+	var netupdateoffset: float = float(Quack.current_time_net_receive%1000000)* 0.000001
 	netupdateoffsetreadout.set_text(str(netupdateoffset))
 	physicsprocessnetupdateoffsetreadout.set_text(str(netupdateoffset-physicsprocessoffset))
 #	var nuts: float = 0.5
