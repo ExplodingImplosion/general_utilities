@@ -1,7 +1,7 @@
 class_name Collision
 
 static func assert_node_has_collision_layers(node: Node3D) -> void:
-	assert(node is CollisionObject3D or node is CSGShape3D or node is SoftBody3D or node is GridMap)
+	assert(node is CollisionObject3D or node is CSGShape3D or node is SoftBody3D or node is GridMap, "Node %s is not a CollisionObject3D, a CSGShape3D, a SoftBody3D, or a GridMap."%[node])
 
 enum {WORLD=1,DAMAGE=2,KNOCKBACK=4,NETWORK=8,AIM_ASSIST=16,INTERACTION=32}
 static func is_damageable(node: Node3D) -> bool:
@@ -102,7 +102,7 @@ static func get_center_of_mass(position: Vector3, scale: Vector3, collider: Coll
 	return Vector3(position.x,Collision.get_collisionshape_height(collider,scale)/2,position.z)
 
 static func assert_is_valid_3D_shape(shape: Shape3D) -> void:
-	assert(shape is BoxShape3D or shape is CapsuleShape3D or shape is SphereShape3D or shape is CylinderShape3D)
+	assert(shape is BoxShape3D or shape is CapsuleShape3D or shape is SphereShape3D or shape is CylinderShape3D,"Shape %s is not a BoxShape3D, a CapsuleShape3D, a SphereShape3D, or a CylinderShape3D."%[shape])
 
 #static func test(params: PhysicsShapeQueryParameters3D,max_results: int = 32) -> Array:
 #	return qNetwork.query.intersect_shape(params,max_results)
