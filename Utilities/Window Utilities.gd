@@ -125,10 +125,11 @@ static func append_to_window_title(title: String) -> void:
 	change_window_title(get_window_title() + title)
 
 ## Returns the project's name if the game is in release mode, or the project's
-## name, plus a debug identifier if it isn't.
+## name, plus a debug identifier if it isn't. Seems like godot does this by default now.
 static func get_window_title() -> String:
-	var title: String = ProjectSettings.get_setting("application/config/name","bruh")
-	return title + DEBUG_IDENTIFIER if OS.is_debug_build() else title
+	return ProjectSettings.get_setting("application/config/name","bruh")
+#	var title: String = ProjectSettings.get_setting("application/config/name","bruh")
+#	return title + DEBUG_IDENTIFIER if OS.is_debug_build() else title
 
 enum {DEFAULT_WINDOW_SIZE_x = 1152,DEFAULT_WINDOW_SIZE_y = 648}
 static func on_window_resized() -> void:
