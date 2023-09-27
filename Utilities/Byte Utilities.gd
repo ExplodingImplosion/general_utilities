@@ -53,11 +53,11 @@ static func which_byte_is_bit_in(bit_offset: int) -> int:
 	return bit_offset/8+(bit_offset%8)/8
 
 const max_u8 = 255
-static func is_valid_u8(bit: int) -> bool:
-	return bit <= max_u8 and bit >= 0
+static func is_valid_u8(byte: int) -> bool:
+	return byte <= max_u8 and byte >= 0
 
-static func assert_valid_u8(bit: int) -> void:
-	assert(is_valid_u8(bit),"Number %s is an invalid unsigned 8-bit int, from 0 to %s"%[bit,max_u8])
+static func assert_valid_u8(byte: int) -> void:
+	assert(is_valid_u8(byte),"Number %s is an invalid unsigned 8-bit int, from 0 to %s"%[byte,max_u8])
 
 const max_u16 = 65535
 static func is_valid_u16(num: int) -> bool:
