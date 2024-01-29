@@ -17,6 +17,7 @@ layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="label" type="Label" parent="container/fpscontainer"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = ExtResource("2_0hsfq")
@@ -30,11 +31,31 @@ theme_override_styles/normal = ExtResource("2_0hsfq")
 clip_text = true
 visible_characters = 7
 
+[node name="quackfpscontainer" type="HBoxContainer" parent="container"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="label" type="Label" parent="container/quackfpscontainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = ExtResource("2_0hsfq")
+text = "QFPS: "
+
+[node name="readout" type="Label" parent="container/quackfpscontainer"]
+custom_minimum_size = Vector2(30, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = ExtResource("2_0hsfq")
+clip_text = true
+visible_characters = 7
+
 [node name="interpcontainer" type="HBoxContainer" parent="container"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="label" type="Label" parent="container/interpcontainer"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = ExtResource("2_0hsfq")
@@ -48,11 +69,107 @@ theme_override_styles/normal = ExtResource("2_0hsfq")
 clip_text = true
 visible_characters = 7
 
+[node name="framedelaycontainer" type="HBoxContainer" parent="container"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="label" type="Label" parent="container/framedelaycontainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = ExtResource("2_0hsfq")
+text = "Network Frame Delay: "
+
+[node name="readout" type="Label" parent="container/framedelaycontainer"]
+custom_minimum_size = Vector2(34, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = ExtResource("2_0hsfq")
+clip_text = true
+visible_characters = 7
+
+[node name="timebehindservercontainer" type="HBoxContainer" parent="container"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="label" type="Label" parent="container/timebehindservercontainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = ExtResource("2_0hsfq")
+text = "Time Behind Server: "
+
+[node name="readout" type="Label" parent="container/timebehindservercontainer"]
+custom_minimum_size = Vector2(56, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = ExtResource("2_0hsfq")
+clip_text = true
+visible_characters = 7
+
+[node name="netinputdelaycontainer" type="HBoxContainer" parent="container"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="label" type="Label" parent="container/netinputdelaycontainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = ExtResource("2_0hsfq")
+text = "Network Input Delay: "
+
+[node name="readout" type="Label" parent="container/netinputdelaycontainer"]
+custom_minimum_size = Vector2(56, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = ExtResource("2_0hsfq")
+clip_text = true
+visible_characters = 7
+
+[node name="serverbuffercontainer" type="HBoxContainer" parent="container"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="label" type="Label" parent="container/serverbuffercontainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = ExtResource("2_0hsfq")
+text = "Server Input Buffer: "
+
+[node name="readout" type="Label" parent="container/serverbuffercontainer"]
+custom_minimum_size = Vector2(34, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = ExtResource("2_0hsfq")
+clip_text = true
+visible_characters = 7
+
+[node name="totalinputdelaycontainer" type="HBoxContainer" parent="container"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="label" type="Label" parent="container/totalinputdelaycontainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = ExtResource("2_0hsfq")
+text = "Total Input Delay: "
+
+[node name="readout" type="Label" parent="container/totalinputdelaycontainer"]
+custom_minimum_size = Vector2(56, 20)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = ExtResource("2_0hsfq")
+clip_text = true
+visible_characters = 7
+
 [node name="deltacontainer" type="HBoxContainer" parent="container"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="label" type="Label" parent="container/deltacontainer"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = ExtResource("2_0hsfq")
@@ -71,6 +188,7 @@ layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="label" type="Label" parent="container/physdeltacontainer"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = ExtResource("2_0hsfq")
@@ -89,6 +207,7 @@ layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="label" type="Label" parent="container/quackphysdeltacontainer"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = ExtResource("2_0hsfq")
@@ -107,6 +226,7 @@ layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="label" type="Label" parent="container/quackdeltacontainer"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = ExtResource("2_0hsfq")
@@ -125,6 +245,7 @@ layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="label" type="Label" parent="container/processtimecontainer"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = ExtResource("2_0hsfq")
@@ -143,6 +264,7 @@ layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="label" type="Label" parent="container/physprocesstimecontainer"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = ExtResource("2_0hsfq")
@@ -161,6 +283,7 @@ layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="label" type="Label" parent="container/processdeltatimediffcontainer"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = ExtResource("2_0hsfq")
@@ -179,6 +302,7 @@ layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="label" type="Label" parent="container/processquackdeltadiffcontainer"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = ExtResource("2_0hsfq")
@@ -197,6 +321,7 @@ layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="label" type="Label" parent="container/physicsprocesstimedeltadiffcontainer"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = ExtResource("2_0hsfq")
@@ -215,6 +340,7 @@ layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="label" type="Label" parent="container/physicsprocessratecontainer"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = ExtResource("2_0hsfq")
@@ -233,6 +359,7 @@ layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="label" type="Label" parent="container/netupdateratecontainer"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = ExtResource("2_0hsfq")
@@ -251,6 +378,7 @@ layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="label" type="Label" parent="container/physicsnetdiffcontainer"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = ExtResource("2_0hsfq")
@@ -269,6 +397,7 @@ layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="label" type="Label" parent="container/physicsprocessoffsetcontainer"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = ExtResource("2_0hsfq")
@@ -287,6 +416,7 @@ layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="label" type="Label" parent="container/netupdateoffsetcontainer"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = ExtResource("2_0hsfq")
@@ -305,6 +435,7 @@ layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="label" type="Label" parent="container/physicsprocessnetupdateoffsetdiffcontainer"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = ExtResource("2_0hsfq")
@@ -324,6 +455,7 @@ layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="label" type="Label" parent="container/test"]
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = ExtResource("2_0hsfq")
