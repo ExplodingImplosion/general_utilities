@@ -23,14 +23,21 @@ static func set_window_mode(mode: int) -> void:
 	assert(mode <= Window.MODE_EXCLUSIVE_FULLSCREEN and mode >= 0, "Invalid window mode %s. Should be a value from 0 to %s."%[mode,Window.MODE_EXCLUSIVE_FULLSCREEN])
 	Quack.root.set_mode(mode)
 
+static func is_root_fullscreen() -> bool:
+	return is_fullscreen(Quack.root)
+
+static func is_fullscreen(window: Window) -> bool:
+	return window.get_mode() == Window.MODE_FULLSCREEN or window.get_mode() == Window.MODE_EXCLUSIVE_FULLSCREEN
+
 static func go_fullscreen() -> void:
-	Quack.root.set_mode(Window.MODE_FULLSCREEN)
+	@warning_ignore("static_called_on_instance")
+	Quack.root.set_mode(Window.MODE_EXCLUSIVE_FULLSCREEN if Quack.is_exported() else Window.MODE_FULLSCREEN)
 
 static func go_windowed() -> void:
 	Quack.root.set_mode(Window.MODE_WINDOWED)
 
-static func is_windowed(this_window: Window) -> bool:
-	return this_window.get_mode() == Window.MODE_WINDOWED
+static func is_windowed(window: Window) -> bool:
+	return window.get_mode() == Window.MODE_WINDOWED or window.get_mode() == Window.MODE_MAXIMIZED
 
 static func is_root_windowed() -> bool:
 	return is_windowed(Quack.root)
@@ -43,6 +50,9 @@ static func set_fullscreen(enabled: bool = true) -> void:
 #	else:
 #		get_tree().get_root().set_mode(Window.MODE_WINDOWED)
 
+static func toggle_fullscreen() -> void:
+	set_fullscreen(!is_root_fullscreen())
+
 static func set_borderless(enabled: bool = false) -> void:
 	Quack.root.set_flag(Window.FLAG_BORDERLESS, enabled)
 
@@ -51,6 +61,9 @@ static func go_debug_window() -> void:
 		go_windowed()
 	Quack.root.set_size(DEBUG_WINDOW_SIZE)
 	Quack.root.set_position(DEBUG_WINDOW_POS)
+
+static func set_max_fps(max_fps: int) -> void:
+	set_max_game_fps(max_fps) if Quack.is_3D_scene() else set_max_menu_fps(max_fps)
 
 static func set_max_game_fps(max_fps: int) -> void:
 	if Quack.is_3D_scene():
@@ -66,25 +79,24 @@ static func set_max_out_of_focus_fps(max_fps: int) -> void:
 	ProjectSettings.set_setting(OOF_FPS_SETTING,max_fps)
 
 static func get_oof_fps_cap() -> int:
-	return ProjectSettings.get_setting(OOF_FPS_SETTING)
+	return ProjectSettings.get_setting(OOF_FPS_SETTING,60)
 
 static func get_game_fps_cap() -> int:
-	return ProjectSettings.get_setting(FPS_SETTING)
+	return ProjectSettings.get_setting(FPS_SETTING,300)
 
 static func get_menu_fps_cap() -> int:
-	return ProjectSettings.get_setting(MENU_FPS_SETTING)
+	return ProjectSettings.get_setting(MENU_FPS_SETTING,144)
 
 static func initialize_general_settings() -> void:
-	set_render_scale(ProjectSettings.get_setting(RENDER_SCALE_SETTING))
+	set_render_scale(ProjectSettings.get_setting(RENDER_SCALE_SETTING,1))
 
 static func go_menu_settings() -> void:
-	set_all_window_settings(ProjectSettings.get_setting(MENU_FPS_SETTING),
+	set_all_window_settings(get_menu_fps_cap(),
 							ProjectSettings.get_setting(MENU_RES_SETTING),
 							ProjectSettings.get_setting(MENU_FULLSCREEN_SETTING),0)
 
 static func set_all_window_settings(max_fps: int, size: Vector2i, fullscreen: int,flags: int) -> void:
 	Engine.set_max_fps(max_fps)
-	@warning_ignore("static_called_on_instance")
 	if Quack.is_exported():
 		resize_aligned(size)
 		set_window_mode(fullscreen)
@@ -103,7 +115,7 @@ static func resize_aligned(size: Vector2i) -> void:
 
 const video_settings_string: String = "Video Settings"
 static func go_game_settings() -> void:
-	set_all_window_settings(ProjectSettings.get_setting(FPS_SETTING),
+	set_all_window_settings(get_game_fps_cap(),
 							ProjectSettings.get_setting(RES_SETTING),
 							ProjectSettings.get_setting(FULLSCREEN_SETTING),0)
 
@@ -156,3 +168,20 @@ static func get_mouse_fraction_from_center() -> Vector2:
 	var window_size: Vector2i = Quack.root.size
 	var window_center: Vector2i = window_size / 2
 	return (Vector2(window_center) - mouse_position) / Vector2(window_size)
+
+static func get_target_fps() -> int:
+				# passing nothing = pasding DisplayServer.SCREEN_OF_MAIN_WINDOW,
+				# which is functionally the same as passing Quack.root.current_screen
+	return roundi(DisplayServer.screen_get_refresh_rate()) if is_root_vsync_enabled() else Engine.max_fps
+
+static func get_target_process_delta() -> float:
+	return 1.0 / get_target_fps()
+
+static func get_target_process_delta_usec() -> int:
+	return TimeUtils.seconds_to_usec(get_target_process_delta())
+
+static func is_root_vsync_enabled() -> bool:
+	return get_root_vsync() > DisplayServer.VSYNC_DISABLED
+
+static func get_root_vsync() -> int:
+	return DisplayServer.window_get_vsync_mode(0)

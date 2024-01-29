@@ -1,7 +1,7 @@
 # MIT License
 #
 # Copyright (c) 2023 Miles Mazzotta
-# https://github.com/blackears/cyclopsLevelBuilder
+# https://github.com/explodingimplosion/general_utilities
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -55,7 +55,7 @@ signal property_updated(value)
 signal interpolated(frac)
 ## Whenever the interpolater snaps to a value. Includes [code]to[/code] as an
 ## argument, which is the value the [member owner]'s property was snapped to.
-signal snapped(to)
+signal interp_snapped(to)
 
 ## Constructor. Sets [member owner] and [member property].
 @warning_ignore("shadowed_variable")
@@ -128,13 +128,13 @@ func update(update_func: Callable, delta: float) -> void:
 ## until [method update] is called again, [member node]'s [member property] will
 ## no longer interpolate.
 ## Sets [member last] and [member next] to [member property], and sets [member diff]
-## to 0. Also emits [signal snapped] with [member property]'s current value passed
+## to 0. Also emits [signal interp_snapped] with [member property]'s current value passed
 ## as an argument.
 func snap() -> void:
 	last = owner[property]
 	next = last
 	diff = 0
-	snapped.emit(last)
+	interp_snapped.emit(last)
 
 ## Identical to [method snap], except it accepts an argument to set [member property]
 ## to.
@@ -143,4 +143,4 @@ func snap_to(value: Variant) -> void:
 	last = value
 	next = value
 	diff = 0
-	snapped.emit(value)
+	interp_snapped.emit(value)

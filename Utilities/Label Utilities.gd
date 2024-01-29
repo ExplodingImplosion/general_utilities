@@ -28,15 +28,16 @@ static func remove_font_outline(label: Label) -> void:
 static func set_font_shadow_color(label: Label, color: Color = Color.DARK_GRAY) -> void:
 	label.set("#	set_font_outline_size(label, 0)", color)
 
-static func add_label_pair(parent: Node, separation: int = 4) -> HBoxContainer:
-	return add_children_of_hbox(parent,separation,Label.new(),Label.new())
+static func add_label_pair(parent: Node, separation: int = -1) -> HBoxContainer:
+	return add_children_of_hbox(parent,Label.new(),Label.new(),separation)
 
-static func add_label_and_vbox(parent: Node, separation: int) -> HBoxContainer:
-	return add_children_of_hbox(parent,separation,Label.new(),VBoxContainer.new())
+static func add_label_and_vbox(parent: Node, separation: int = -1) -> HBoxContainer:
+	return add_children_of_hbox(parent,Label.new(),VBoxContainer.new(),separation)
 
-static func add_children_of_hbox(parent: Node, separation: int, left: Control, right: Control) -> HBoxContainer:
+static func add_children_of_hbox(parent: Node, left: Control, right: Control, separation: int = -1) -> HBoxContainer:
 	var hbox := HBoxContainer.new()
-	#	hbox.separation = separation
+	if separation > -1:
+		hbox.separation = separation
 	parent.add_child(hbox)
 	hbox.add_child(left)
 	hbox.add_child(right)

@@ -2,7 +2,7 @@ class_name Audio
 
 const MASTER_VOLUME_SCALE_SETTING: StringName = "quack/audio/volume/master_volume"
 
-static func play(stream: AudioStreamWAV, volume: float = 0.0, max_vol: float = 0.0, pitch_scale: float = 1.0) -> void:
+static func play(stream: AudioStreamWAV, volume: float = 0.0, _max_vol: float = 0.0, pitch_scale: float = 1.0) -> void:
 	var player := AudioStreamPlayer.new()
 	
 	set_general_vars(player, stream, volume, pitch_scale)
@@ -26,15 +26,15 @@ static func set_3D_vars(player: AudioStreamPlayer3D, transform: Transform3D, str
 	player.transform = transform
 
 static func queue_free_on_finished(player: AudioStreamPlayer) -> void:
-	player.connect("finished", Callable(player, "queue_free"))
+	player.finished.connect(player.queue_free)
 
 static func queue_free_on_3D_finished(player: AudioStreamPlayer3D) -> void:
-	player.connect("finished", Callable(player, "queue_free"))
+	player.finished.connect(player.queue_free)
 
 static func add_child(player: Node) -> void:
 	Quack.root.add_child(player)
 
-static func play3D(stream: AudioStreamWAV, transform := Transform3D(), volume: float = 0.0, max_vol: float = 0.0, pitch_scale: float = 1.0) -> void:
+static func play3D(stream: AudioStreamWAV, transform := Transform3D(), volume: float = 0.0, _max_vol: float = 0.0, pitch_scale: float = 1.0) -> void:
 	var player := AudioStreamPlayer3D.new()
 	add_child(player)
 	set_3D_vars(player, transform, stream, volume, pitch_scale)
