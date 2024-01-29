@@ -1,4 +1,7 @@
 # general_utilities
+
+note: ngl half of this is prolly outdated at this point. functionality is NO LONGER GUARRANTEED (lmao).
+
 General utility scripts, 'namespaces' and singletons that I use in most of my Godot projects.
 
 There are 3 types of scripts in this repo. There are singletons, which are intended to be added to a
