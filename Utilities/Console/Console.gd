@@ -1,6 +1,6 @@
 extends Window
 
-const console_commands_filepath := "res://Utilities/Console/Console Commands.gd"
+const console_commands_filepath := "Console Commands.gd"
 const console_comamnds_script: GDScript = preload(console_commands_filepath)
 const CONSOLE_TRANSPARENCY_SETTING_PATH = "quack/console/transparency"
 ## Delimiter used to check for command aliases in [method parse_commands_script]
