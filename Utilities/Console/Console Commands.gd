@@ -25,7 +25,6 @@ static func res_menu_cmd(_resx: int, _resy: int) -> void:
 	doesntwork()
 
 static func change_scene_cmd(scene_path: String) -> void:
-	Console.write("If you included any spaces in that string, it's not gonna work lol")
 	(Engine.get_main_loop() as SceneTree).change_scene_to_file(scene_path)
 	Quack.on_scene_changed.call_deferred()
 
@@ -160,8 +159,45 @@ static func upnp_test() -> void:
 const show_commands_aliases: PackedStringArray = ["show_all_commands","help","get_commands","commands"]
 static func show_commands_cmd() -> void:
 	Console.write("All commands and aliases:")
-	for command in Console.command_string_map.keys():
-		Console.write("   "+command)
+	for command in Console.commands:
+		Console.write(Console.indent_string+command.get_command_name()+", aliases:")
+		for alias in command.get_aliases():
+			Console.write(Console.indent_string+Console.indent_string+alias)
+		await Quack.await_if_out_of_time(0.1)
+	Console.write("\nInput help_command [command] for more details about a specific command. Input help_advanced for more details about all commands.")
+
+static func help_command_cmd(command_string: String) -> void:
+	
+	var command: Console.CommandInfo = Console.command_string_map.get(command_string)
+	if command == null:
+		return Console.write("Command %s does not exist."%[command_string])
+	
+	# Write command
+	Console.write(BBCode.set_color("Command: "+command.get_command_name(),Color.YELLOW))
+	
+	# Write command arguments
+	if command.has_args():
+		Console.write(BBCode.set_color("Arguments:",Color.CHOCOLATE))
+		for arg in command.args_info:
+			Console.write("%s%s (%s)"%[Console.indent_string,arg[0],arg[1]])
+	else:
+		Console.write(BBCode.set_color("No arguments.",Color.GREEN*0.9))
+	
+	# WRite aliases
+	Console.write(BBCode.set_color("Aliases:",Color.CYAN))
+	for alias in command.get_aliases():
+		Console.write(Console.indent_string+BBCode.set_color(alias,Color.CYAN * 0.7))
+
+static func help_advanced_cmd() -> void:
+	var command: Console.CommandInfo
+	var num_commands: int = Console.commands.size()
+	Console.writeln()
+	for i in num_commands:
+		command = Console.commands[i]
+		help_command_cmd(command.get_command_name())
+		# write 2 newlines until last command
+		if i < num_commands - 1:
+			Console.writeln()
 		await Quack.await_if_out_of_time(0.1)
 
 static func doesntwork() -> void:
@@ -309,7 +345,7 @@ Total input delay: %s"
 		Console.write("Can't get net info if not connected to a multiplayer game.")
 
 static func change_tickrate_cmd(rate: int) -> void:
-	Quack.set_physics_simulation_rate(rate)
+	Tickrate.set_physics_simulation_rate(rate)
 
 static func connect_debug_cmd(ip: String) -> void:
 	if !NetDebug.lag_faker_active():
@@ -389,11 +425,7 @@ static func check_net_node_types_cmd() -> void:
 		for property in node_type.get_property_list():
 			await Quack.await_if_out_of_time(0.1)
 			if QuackMultiplayer.is_script_variable(property):
-				if node_type[property.name] is NetworkedNode.NetNodeBoolEncoder:
-					Console.write("   "+property.name+":")
-					write_script_properties(node_type[property.name],["net_node_info"],"     ")
-				else:
-					Console.write("   "+property.name+": "+str(node_type[property.name]))
+				Console.write("   "+property.name+": "+str(node_type[property.name]))
 
 static func write_script_properties(object: Object,exceptions: PackedStringArray = [],prefix: String = "") -> void:
 	for property in object.get_property_list():
@@ -412,3 +444,61 @@ static func reload_networked_node_types_cmd() -> void:
 const reload_console_commands_aliases: PackedStringArray = ["reload_console","refresh_commands","refresh_console"]
 static func reload_console_commands_cmd() -> void:
 	Console.reload_commands()
+static func get_all_classes_info_cmd() -> void:
+	var global_class_list: Array[Dictionary] = ProjectSettings.get_global_class_list()
+	await Quack.await_if_out_of_time(0.1)
+	for c in global_class_list:
+		Console.write(String(c.class))
+		write_script_info(load(c.path))
+
+static func get_class_info_cmd(name: String) -> void:
+	var global_class_list: Array[Dictionary] = ProjectSettings.get_global_class_list()
+	await Quack.await_if_out_of_time(0.1)
+	var script: Script
+	for c in global_class_list:
+		if c.class == name:
+			script = load(c.path)
+			break
+		await Quack.await_if_out_of_time(0.1)
+	if !script:
+		return Console.write("%s not here lmao"%[name])
+	
+	write_script_info(script)
+
+static func write_script_info(script: Script) -> void:
+	var constant_map: Dictionary = script.get_script_constant_map()
+	await Quack.await_if_out_of_time(0.1)
+	Console.write("Constants:")
+	for constant in constant_map:
+		Console.write(Console.indent_string+"%s: %s"%[constant,str(constant_map[constant])])
+		await Quack.await_if_out_of_time(0.1)
+	Console.writelns(2)
+	
+	Console.write("Properties:")
+	write_array_of_dicts(script.get_script_property_list())
+	
+	Console.write("Methods:")
+	write_array_of_dicts(script.get_script_method_list())
+	
+	Console.write("Signals:")
+	write_array_of_dicts(script.get_script_signal_list())
+
+static func write_array_of_dicts(array: Array[Dictionary],await_frac: float = 0.1) -> void:
+	for dict in array:
+		write_dict_stringkeyonly(dict,await_frac)
+		Console.writeln()
+
+static func write_dict_stringkeyonly(dict: Dictionary,await_frac: float = 0.1) -> void:
+	Quack.await_if_out_of_time(await_frac)
+	for key in dict:
+		Console.write(Console.indent_string+"%s: %s"%[key,str(dict[key])])
+		await Quack.await_if_out_of_time(await_frac)
+
+static func get_classes_cmd() -> void:
+	var global_class_list: Array[Dictionary] = ProjectSettings.get_global_class_list()
+	await Quack.await_if_out_of_time(0.1)
+	for c in global_class_list:
+		for property in c:
+			Console.write("%s: %s"%[property,c[property]])
+			await Quack.await_if_out_of_time(0.1)
+		Console.writeln()

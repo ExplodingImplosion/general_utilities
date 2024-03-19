@@ -180,3 +180,9 @@ static func is_physics_frame_interval(interval: int) -> bool:
 
 static func is_physics_time_interval(interval: float) -> bool:
 	return is_physics_frame_interval(to_physics_frames(interval))
+
+static func get_time_usec() -> float:
+	return usec_to_seconds(Time.get_ticks_usec())
+
+static func get_time_msec() -> float:
+	return msec_to_seconds(Time.get_ticks_usec())

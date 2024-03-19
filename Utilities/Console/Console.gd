@@ -1,7 +1,7 @@
 extends Window
 
-const console_commands_filepath := "Console Commands.gd"
-const console_comamnds_script: GDScript = preload(console_commands_filepath)
+const console_commands_filepath := "res://Utilities/Console/Console Commands.gd"
+const console_commands_script: GDScript = preload(console_commands_filepath)
 const CONSOLE_TRANSPARENCY_SETTING_PATH = "quack/console/transparency"
 ## Delimiter used to check for command aliases in [method parse_commands_script]
 const alias_delimiter = "_aliases"
@@ -152,13 +152,14 @@ func setup_label() -> void:
 	@warning_ignore("static_called_on_instance")
 	setup_label_properties(readout)
 	container.add_child(readout)
-	readout.set_focus_mode(Control.FOCUS_NONE)
+	readout.set_focus_mode(Control.FOCUS_CLICK)
 
 static func setup_label_properties(this_label: RichTextLabel) -> void:
 	this_label.set_use_bbcode(true)
 	this_label.set_v_size_flags(Control.SIZE_EXPAND_FILL)
 	this_label.set_scroll_follow(true)
 	this_label.set_selection_enabled(true)
+	this_label.set_context_menu_enabled(true)
 
 func setup_line() -> void:
 	@warning_ignore("static_called_on_instance")
@@ -229,7 +230,7 @@ func add_shortcut(shortcut: StringName) -> void:
 
 func parse_commands() -> void:
 	@warning_ignore("static_called_on_instance")
-	parse_commands_script(console_comamnds_script, command_string_map, commands)
+	parse_commands_script(console_commands_script, command_string_map, commands)
 	# other scripts can go here
 
 func reload_commands() -> void:
@@ -240,6 +241,10 @@ func reload_commands() -> void:
 func writeln() -> void:
 	readout.append_text("\n")
 	print("\n")
+
+func writelns(amnt: int) -> void:
+	for i in amnt:
+		writeln()
 
 func add_msg(s: String) -> void:
 	readout.append_text(s + "\n")
@@ -261,13 +266,29 @@ func write_on_interval(s: String, i: float) -> void:
 ## Writes [param s] to the console and prints it in the editor console/logs it.
 func write(s: String) -> void:
 	add_msg(s)
-	print(s)
+	print_rich(s)
 
 ## Writes [param s] to the console and prints it in the editor console/logs it as
 ## an error.
 func writerr(s: String) -> void:
 	add_err_msg(s)
 	printerr(s)
+
+## Writes [param dict] to the console, and recursively writes any sub-dictionaries
+## in the same format.
+func write_dict(dict: Dictionary) -> void:
+	var value: Variant
+	for key in dict:
+		value = dict[key]
+		if value is Dictionary:
+			write("%s:"%key)
+			write_dict(dict)
+		elif value is Array[Dictionary]:
+			write("%s:"%key)
+			for i in value:
+				write_dict(i)
+		else:
+			write("%s: %s"%[key,value])
 
 ## Writes [param s] to the console and pushes an error in the editor
 func push_err(s: String) -> void:
@@ -278,16 +299,21 @@ func add_err_msg(s: String) -> void:
 	@warning_ignore("static_called_on_instance")
 	add_msg(BBCode.add_bbcode(s,err_bbcode))
 
+#func wrap_color(method: Callable, color: Color) -> void:
+	#readout.push_color(color)
+	#method.call()
+	#readout.pusH_color(Color.WHITE)
+
 ## Executes the inputted command and its arguments, given as [param input]. The
 ## command is parsed as the first string delimited by a space, and 
 func execute_command(input: String):
-	if input == "":
+	if input.is_empty():
 		return
 	
 	command_line.clear()
 	write(str("> ", input))
 	
-	var args: Array[Variant] = Array(input.split(" "))
+	var args: Array[Variant] = get_args(input)
 	var command_string: String = args.pop_front()
 	var command_info: CommandInfo = command_string_map.get(command_string)
 	
@@ -303,6 +329,90 @@ func execute_command(input: String):
 	
 	increment_history(input)
 
+const dquote = "'"
+const quote = '"'
+
+static func get_occurrences(string: String, delim: String) -> PackedInt32Array:
+	var array := PackedInt32Array()
+	var occurrences: int = string.count(delim)
+	if !occurrences:
+		return array
+	array.resize(occurrences)
+	for i in occurrences:
+		array[i] = string.find(delim,array[i-1])
+	return array
+
+static func get_args(input: String) -> Array[Variant]:
+	
+	if input.count(dquote) < 1 and input.count(quote) < 1:
+		return input.split(" ")
+
+	return get_args_advanced(input)
+
+static func get_args_advanced(input: String) -> Array[Variant]:
+	var args: Array[Variant] = []
+	var offset: int = 0
+	var type: tokens
+	var next: int
+	args.append(input.get_slice(" ",0))
+	offset = input.find(" ")
+	breakpoint
+	while offset < input.length():
+		type = get_token_type(input[offset])
+		# if the character is a space,
+		if type == tokens.SPACE:
+			# add an argument at __
+			args.append(input.substr(offset))
+			continue
+		# if the character is some other valid token,
+		if is_valid_token(type):
+			# next = the next occurrence of the token
+			next = get_next_occurrence(input,type,offset)
+			# if the token occurs later in the string,
+			if next:
+				# add an argument from after the character until right before
+				# the next occurrence
+				args.append(input.substr(offset+1,next-offset-1))
+				# offset = the character after the current character's next
+				# occurrence
+				offset = next + 1
+			# if the token DOES NOT occur later in the string,
+			else:
+				pass
+		else:
+			offset += 1
+	return args
+
+static func get_next_occurrence(string: String, token: tokens, offset: int) -> int:
+	for i in range(offset+1,string.length()):
+		if get_token_type(string[i]) == token:
+			return i
+	# could be -1, but since this is the NEXT occurrence, this just makes converting to a bool
+	# easier.
+	return 0
+
+static func get_token_type(token: String) -> int:
+	assert(token.length() == 1, "Token %s length must be 1, but is %s."%[token,token.length()])
+	match token:
+		quote:
+			return tokens.QUOTE
+		dquote:
+			return tokens.DQUOTE
+		" ":
+			return tokens.SPACE
+		_:
+			return tokens.NON_TOKEN
+
+static func is_valid_token(token: tokens) -> bool:
+	return token > tokens.NON_TOKEN
+
+enum tokens {
+	NON_TOKEN = -1, # -1
+	QUOTE, # 0
+	DQUOTE, # 1
+	SPACE, # 2
+}
+
 func increment_history(input: String) -> void:
 	history[hist_offset] = input
 	hist_offset = wrapi(hist_offset+1,0,HISTORY_MAX_OFFSET)
@@ -312,11 +422,13 @@ static func convert_args(args: Array[Variant]) -> void:
 	for i in args.size():
 		args[i] = convert_arg(args[i] as String)
 
+const truestring = "true"
+const falsestring = "false"
 static func convert_arg(arg: String) -> Variant:
 	var lowercase_arg: String = arg.to_lower()
-	if lowercase_arg == "false":
+	if lowercase_arg == truestring:
 		return false
-	elif lowercase_arg == "true":
+	elif lowercase_arg == falsestring:
 		return true
 	elif arg.is_valid_float():
 		return arg.to_float()
@@ -337,6 +449,19 @@ var ping_start_time: int
 	var time_received_at: int = Time.get_ticks_usec()
 	var ping: int = time_received_at - ping_start_time
 	Console.write("Peer %s pinged back after %s usec (%s seconds)."%[multiplayer.get_remote_sender_id(),ping,float(ping)*0.000001])
+
+func profile(method: Callable, custom_text: String = "") -> Variant:
+	var t1: int
+	var t2: int
+	var result: Variant
+	t1 = Time.get_ticks_usec()
+	result = method.call()
+	t2 = Time.get_ticks_usec()
+	t2 -= t1
+	if custom_text.is_empty():
+		custom_text = method.get_method()
+	write(custom_text + " took %s useconds, %s seconds."%[t2,TimeUtils.usec_to_seconds(t2)])
+	return result
 
 static func get_method_names(script_methods: Array[Dictionary]) -> PackedStringArray:
 	var method_names: PackedStringArray = []

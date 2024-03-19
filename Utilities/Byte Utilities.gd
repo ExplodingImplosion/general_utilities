@@ -249,3 +249,23 @@ static func get_decompressed(bytes: PackedByteArray, mode: FileAccess.Compressio
 
 static func get_pct(num: int, factor: int) -> float:
 	return float(num*100)/factor
+
+# based on https://www.reddit.com/r/godot/comments/l8ximk/comment/iuh97y0/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+static func to_binary_string(num: int) -> String:
+	var str := ""
+	var n : = num
+	while n > 0:
+		str = str(n&1) + str
+		n = n>>1
+	assert(str.bin_to_int() == num, "String %s.bin_to_int() number %s != %s."%[str,str.bin_to_int(),num])
+	return str
+
+static func to_binary_array(bytes: PackedByteArray) -> PackedStringArray:
+	var strings := PackedStringArray()
+	var size := bytes.size()
+	strings.resize(size)
+	
+	for i in size:
+		strings[i] = to_binary_string(bytes[i])
+	
+	return strings

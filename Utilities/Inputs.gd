@@ -50,9 +50,9 @@ func change_sens(newsens: float) -> void:
 
 func _input(event):
 	if event is InputEventMouseMotion:
-		emit_signal("mouse_moved", event.relative * sens)
+		mouse_moved.emit(event.relative*sens)
 	elif Input.is_action_just_pressed("ui_cancel"):
-		emit_signal("pause_pressed")
+		pause_pressed.emit()
 
 # this is so dumb lmfao
 static func mouse_to_aim(event: InputEventMouseMotion) -> Vector2:
@@ -161,15 +161,73 @@ class PlayerInputs:
 		@warning_ignore("static_called_on_instance")
 		aim_angle.y = clamp_vertical_aim(aim_angle.y - deg_to_rad(direction.y))
 	
-	const MIN_VERTICAL_ANGLE: float = -deg_to_rad(89.999)
-	const MAX_VERTICAL_ANGLE: float = deg_to_rad(89.999)
+	const MIN_VERTICAL_ANGLE: float = -deg_to_rad(89.999) # using the evaluated 1.57078 results in precision error for asserts lmao
+	const MAX_VERTICAL_ANGLE: float = deg_to_rad(89.999) # using the evaluated 1.57078 results in precision error for asserts lmao
 	static func clamp_vertical_aim(value: float) -> float:
 		return clamp(value, MIN_VERTICAL_ANGLE, MAX_VERTICAL_ANGLE)
 	
 	func serialize() -> PackedByteArray:
-		return Network.InputState.serialize_player_state(inputs,input_dir,aim_angle,events)
+		return InputEncoder.serialize_player_state(inputs,input_dir,aim_angle,events)
 	
 	func get_serialized() -> PackedByteArray:
 		if serialized.is_empty():
 			serialized = serialize()
-		return serialized
+		return serialized.duplicate()
+
+class InputEncoder:
+#	const signature_end_offset = 8
+#
+#	const inputs_offset = signature_end_offset
+	const inputs_end_offset = 8 # inputs_offset + 8
+	
+	const input_dir_offset = inputs_end_offset
+	const input_dir_end_offset = input_dir_offset + 8
+	
+	const aim_angle_offset = input_dir_end_offset
+	const aim_angle_end_offset = aim_angle_offset + 8
+	
+	const events_offset = aim_angle_end_offset
+	
+	const min_client_state_size = events_offset
+	
+	static func serialize_player_state(inputs: int, input_dir: Vector2, aim_angle: Vector2, events: PackedByteArray) -> PackedByteArray:
+		var client_state: PackedByteArray = []
+		client_state.resize(min_client_state_size)
+		if !events.is_empty():
+			client_state.append_array(events)
+		
+		client_state.encode_s64(0,inputs)
+		
+		ByteUtils.encode_v2(client_state,input_dir,input_dir_offset)
+		
+		ByteUtils.encode_v2(client_state,aim_angle,aim_angle_offset)
+		
+		return client_state
+	
+	static func get_inputs(packet: PackedByteArray) -> int:
+		return packet.decode_s64(0)
+	
+	static func get_input_dir(packet: PackedByteArray) -> Vector2:
+		# slightly slower this way than to manually decode floats
+		return ByteUtils.decode_v2(packet,input_dir_offset)
+	
+	static func get_aim_angle(packet: PackedByteArray) -> Vector2:
+		return ByteUtils.decode_v2(packet,aim_angle_offset)
+	
+	static func get_client_events(packet: PackedByteArray) -> PackedByteArray:
+		return packet.slice(events_offset)
+	
+	static func deserialize(packet: PackedByteArray) -> Inputs.PlayerInputs:
+		# same as calling get_inputs(packet)
+		var inputs: Inputs.PlayerInputs = Inputs.PlayerInputs.new(packet.decode_s64(0),get_input_dir(packet))
+		inputs.aim_angle = get_aim_angle(packet)
+		inputs.events = get_client_events(packet)
+		inputs.serialized = packet
+		return inputs
+	
+	static func deserialize_to_inputs(packet: PackedByteArray, inputs: Inputs.PlayerInputs) -> void:
+		inputs.inputs = packet.decode_s64(0)
+		inputs.input_dir = get_input_dir(packet)
+		inputs.aim_angle = get_aim_angle(packet)
+		inputs.events = get_client_events(packet)
+		inputs.serialized = packet
