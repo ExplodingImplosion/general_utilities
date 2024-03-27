@@ -164,7 +164,7 @@ static func get_time_left_in_frame_usec() -> int:
 	return next_time - time
 
 static func get_time_elapsed_in_frame_usec() -> int:
-	return process_time_usec + Time.get_ticks_usec()
+	return Time.get_ticks_usec() - process_time_usec
 
 static func get_time_left_in_frame() -> float:
 	return usec_to_seconds(get_time_left_in_frame_usec())
