@@ -1,7 +1,19 @@
 # general_utilities
 
-note: ngl half of this is prolly outdated at this point. functionality is NO LONGER GUARRANTEED (lmao).
+# (this repo basically 100% deprecated)
+Note: This is all old stuff. Most of the scripts have a dealbreaker in them, so to speak.
+There's an excessive use of class_name's. Many scripts are redundant with modern Godot features
+(such as interp scripts). Classes like ByteUtils literally have certain functions that are bugs.
+ByteUtils in particular is pretty bad, since function calls in GDScript aren't exactly free. The
+abstraction really isn't worth it. Also, stuff like the console is missing a lot of basic features
+that I've added over time in other projects, and I just haven't updated the repo to reflect it. Part
+of this is because in a more recent project, I've completely overhauled my file naming style from
+`Capitalized Names For Files` to `snake_case`, which would break the history of the repo, and I don't
+want to deal with copy-pasting file contents all the time instead of my old lazy way of just copy-pasting
+the most recent files. Anyway, long story short, this repo doesn't reflect the utils that I use in my current
+Godot projects.
 
+# Here's the old stuff.
 General utility scripts, 'namespaces' and singletons that I use in most of my Godot projects.
 
 There are 3 types of scripts in this repo. There are singletons, which are intended to be added to a
